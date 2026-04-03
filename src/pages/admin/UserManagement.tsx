@@ -36,7 +36,8 @@ const UserManagement = () => {
 
   const handleCreate = async () => {
     try {
-      const user = await userApi.create({ name, email, role: role as any } as any);
+      if (!name || !email || !password) return toast({ title: 'All fields are required', variant: 'destructive' });
+      const user = await userApi.create({ name, email, password, role: role as any } as any);
       setUsers(prev => [...prev, user]);
       toast({ title: 'User created!' });
       setDialogOpen(false);
