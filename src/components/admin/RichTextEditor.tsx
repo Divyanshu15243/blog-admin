@@ -3,8 +3,7 @@ import StarterKit from '@tiptap/starter-kit';
 import LinkExtension from '@tiptap/extension-link';
 import ImageExtension from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
-import { Bold, Italic, List, ListOrdered, Heading2, Heading3, Quote, Code, Link2, ImageIcon, Minus, Undo, Redo } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Bold, Italic, List, ListOrdered, Heading1, Heading2, Heading3, Quote, Code, Link2, ImageIcon, Minus, Undo, Redo } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useCallback } from 'react';
 
@@ -25,7 +24,7 @@ const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
     editorProps: {
       attributes: {
-        class: 'prose-blog min-h-[400px] outline-none p-4 font-sans',
+        class: 'min-h-[400px] outline-none p-4 font-sans prose prose-sm max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:my-2 prose-ul:my-2 prose-ol:my-2',
       },
     },
   });
@@ -45,9 +44,16 @@ const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
   if (!editor) return null;
 
   const ToolButton = ({ onClick, active, children, title }: { onClick: () => void; active?: boolean; children: React.ReactNode; title: string }) => (
-    <Button variant={active ? 'secondary' : 'ghost'} size="icon" className="h-8 w-8" onClick={onClick} title={title} type="button">
+    <button
+      type="button"
+      onMouseDown={e => { e.preventDefault(); onClick(); }}
+      title={title}
+      className={`h-8 w-8 flex items-center justify-center rounded text-sm transition-colors ${
+        active ? 'bg-secondary text-secondary-foreground' : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+      }`}
+    >
       {children}
-    </Button>
+    </button>
   );
 
   return (
@@ -61,6 +67,9 @@ const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
           <Italic className="h-4 w-4" />
         </ToolButton>
         <Separator orientation="vertical" className="h-6 mx-1" />
+        <ToolButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} active={editor.isActive('heading', { level: 1 })} title="Heading 1">
+          <Heading1 className="h-4 w-4" />
+        </ToolButton>
         <ToolButton onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Heading 2">
           <Heading2 className="h-4 w-4" />
         </ToolButton>
